@@ -1,0 +1,8 @@
+Gli array in JSON vengono utilizzati per organizzare un insieme di elementi correlati (che potrebbero essere JSONObject):
+[{"name":"item1"},{"name": "item2}]
+
+Il JSONObject viene in genere utilizzato per contenere coppie chiave/valore relative a un singolo elemento.
+{"name":"item1","description":"description1"}
+
+Ovviamente JSOArray e JSONObject possono essere annidati uno dentro l'altro.
+{"startIndex":0,[{"name":"item1"},{"name":"item2"}]}

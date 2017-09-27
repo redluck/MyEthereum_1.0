@@ -164,13 +164,29 @@ public class GetCoinbaseJSONTask extends AsyncTask<Void, Void, JSONObject>{
             thirdValue.setBackgroundResource(R.drawable.textview_background_red);
         }
 
+        //Riempimento della TextView sul quarto investimento
+        TextView forthValue = (TextView) ((Activity) GetCoinbaseJSONTaskContext).findViewById(R.id.value04);
+        String dataInvestimento04 = "27/09/2017 10:49";
+        double valoreEthAllaData04 = 248.16;
+        double ethAcquistato04 = 1.00000000;
+        double spesa04 = 248.16;
+        double valoreAttualeInvestimento04 = ethAcquistato04 * valoreEthAttuale;
+        double guadagno04 = valoreAttualeInvestimento04 - spesa04;
+        forthValue.setText("Data investimento: " + dataInvestimento04 + "\nValore ETH alla data: € " + valoreEthAllaData04 + "\nETH acquistato: " + ethAcquistato04 + "\nSpesa: € " + new DecimalFormat("#.00").format(spesa04) + "\nValore attuale investimento: € " + new DecimalFormat("#.00").format(valoreAttualeInvestimento04) + "\nGuadagno: € " + new DecimalFormat("#.00").format(guadagno04));
+        if(guadagno04 >= 0){
+            forthValue.setBackgroundResource(R.drawable.textview_background_green);
+        }
+        else{
+            forthValue.setBackgroundResource(R.drawable.textview_background_red);
+        }
+
         //Riempimento della TextView sui totali
         TextView total = (TextView) ((Activity) GetCoinbaseJSONTaskContext).findViewById(R.id.total);
-        double ethAcquistatoTot = ethAcquistato01 + ethAcquistato02 + ethAcquistato03;
-        double spesaTot = spesa01 + spesa02 + spesa03;
-        double valoreAttualeInvestimentoTot = valoreAttualeInvestimento01 + valoreAttualeInvestimento02 + valoreAttualeInvestimento03;
+        double ethAcquistatoTot = ethAcquistato01 + ethAcquistato02 + ethAcquistato03 + ethAcquistato04;
+        double spesaTot = spesa01 + spesa02 + spesa03 + spesa04;
+        double valoreAttualeInvestimentoTot = valoreAttualeInvestimento01 + valoreAttualeInvestimento02 + valoreAttualeInvestimento03 + valoreAttualeInvestimento04;
         double guadagnoTot = valoreAttualeInvestimentoTot - spesaTot;
-        total.setText("Spesa totale: € " + new DecimalFormat("#.00").format(spesaTot) + "\nValore attuale investimento totale: € " + new DecimalFormat("#.00").format(valoreAttualeInvestimentoTot) + "\nGuadagno totale: € " + new DecimalFormat("#.00").format(guadagnoTot));
+        total.setText("ETH acquistato totale: " + ethAcquistatoTot + "\nSpesa totale: € " + new DecimalFormat("#.00").format(spesaTot) + "\nValore attuale investimento totale: € " + new DecimalFormat("#.00").format(valoreAttualeInvestimentoTot) + "\nGuadagno totale: € " + new DecimalFormat("#.00").format(guadagnoTot));
         if(guadagnoTot >= 0){
             total.setBackgroundResource(R.drawable.textview_background_green_total);
         }

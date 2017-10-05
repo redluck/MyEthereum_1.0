@@ -81,10 +81,14 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 fragment = new Fragment02();
                 tag = "frag02";
                 break;
-            /*case 2: PROVA 4
+            case 2:
                 fragment = new Fragment03();
                 tag = "frag03";
-                break;*/
+                break;
+            case 3:
+                fragment = new Fragment04();
+                tag = "frag04";
+                break;
             default:
                 break;
         }

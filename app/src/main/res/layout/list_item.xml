@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <!-- ***** Date ********************************************* -->
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dip"
+        android:paddingBottom="5dip"
+        android:textSize="15sp" />
+    
+    <!-- ***** ETH value at date ******************************** -->
+    <TextView
+        android:id="@+id/eth_value_at_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dip"
+        android:paddingBottom="5dip"
+        android:textSize="15sp" />
+
+    <!-- ***** Bought ETH *************************************** -->
+    <TextView
+        android:id="@+id/bought_eth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dip"
+        android:paddingBottom="5dip"
+        android:textSize="15sp" />
+
+    <!-- ***** Cost in EU *************************************** -->
+    <TextView
+        android:id="@+id/cost_in_eu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dip"
+        android:paddingBottom="5dip"
+        android:textSize="15sp" />
+
+    <!-- ***** Current investment value ************************* -->
+    <TextView
+        android:id="@+id/current_investment_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dip"
+        android:paddingBottom="5dip"
+        android:textSize="15sp" />
+
+    <!-- ***** Profit ******************************************* -->
+    <TextView
+        android:id="@+id/profit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dip"
+        android:paddingBottom="5dip"
+        android:textSize="15sp" />
+
+</LinearLayout>

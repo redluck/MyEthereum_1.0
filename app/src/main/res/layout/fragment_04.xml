@@ -5,16 +5,13 @@
     android:orientation="vertical"
     tools:context="it.redluck.materialdesign.activity.Fragment04">
 
-    <ListView
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="5dp"
-        android:minHeight="100dp"
-        android:background="#FFFFFF"
-        android:divider="#FFFFFF"
-        android:dividerHeight="5dp"
-        android:cacheColorHint="@android:color/transparent" />
+    <TextView
+        android:id="@+id/mainText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text=""/>
 
 </RelativeLayout>
 

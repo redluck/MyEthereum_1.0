@@ -1,5 +1,7 @@
 package it.redluck.materialdesign.activity;
 
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -24,6 +26,15 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Da Android 6.0 (API 23) anche se l'utente ha accettato i permessi al momento dell'installazione,
+        //può successivamente decidere di revocarli. Controlliamo quindi la versione di Android installata
+        //ed eventualmente riassegnamo i permessi necessari nell'override del metodo onRequestPermissionsResult
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            String[] perms = {"android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"};
+            int permsRequestCode = 200;
+            requestPermissions(perms, permsRequestCode);
+        }
+
         //Impostazione della Toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -36,6 +47,19 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         //Visualizziamo la prima voce del navigation drawer al lancio dell'applicazione
         onDrawerItemSelected(0);
+    }
+
+    /*----------------------------------------------------------------------------------------------------+
+	| onRequestPermissionsResult()                                                                        |
+	+----------------------------------------------------------------------------------------------------*/
+    @Override
+    public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults) {
+        switch(permsRequestCode){
+            case 200:
+                boolean AccessFineLocationAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                boolean AccessCoarseLocationAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                break;
+        }
     }
 
     /*----------------------------------------------------------------------------------------------------*

@@ -163,12 +163,12 @@ public class GetCoinbaseJSONTask extends AsyncTask<Void, Void, ArrayList<HashMap
         double totProfit_double_2_decimals = Double.parseDouble(totProfit_formatted_dot);
 
         //Sysdate
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         String dataStr = sdf.format(new Date());
 
         //Creiamo una mappa contenente i valori dei totali
         HashMap<String, String> mapTot = new HashMap<String, String>();
-        mapTot.put("Date", "TOTALE\nData: " + dataStr);
+        mapTot.put("Date", "TOTALE\n\nData: " + dataStr);
         mapTot.put("ETH value at date", "Valore ETH: " + ethCurrentValue);
         mapTot.put("Bought ETH", "ETH acquistato: " + totBoughtEth);
         mapTot.put("Cost in EU", "Spesa: " + totCostInEu_double_2_decimals);

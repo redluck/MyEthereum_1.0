@@ -76,16 +76,12 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         String title = getString(R.string.app_name);
         switch (position) {
             case 0:
-                fragment = new Fragment01();
+                fragment = new Fragment03();
                 tag = "frag01";
                 break;
             case 1:
                 fragment = new Fragment02();
                 tag = "frag02";
-                break;
-            case 2:
-                fragment = new Fragment03();
-                tag = "frag03";
                 break;
             default:
                 break;

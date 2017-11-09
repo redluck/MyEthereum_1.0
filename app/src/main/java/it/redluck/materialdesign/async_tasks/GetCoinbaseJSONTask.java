@@ -168,14 +168,14 @@ public class GetCoinbaseJSONTask extends AsyncTask<Void, Void, ArrayList<HashMap
 
         //Creiamo una mappa contenente i valori dei totali
         HashMap<String, String> mapTot = new HashMap<String, String>();
-        mapTot.put("Date", "TOTALI\n\nData: " + dataStr);
+        mapTot.put("Date", "TOTALE\n\nData: " + dataStr);
         mapTot.put("ETH value at date", "Valore ETH: " + ethCurrentValue);
         mapTot.put("Bought ETH", "ETH acquistato: " + totBoughtEth);
         mapTot.put("Cost in EU", "Spesa: " + totCostInEu_double_2_decimals);
         mapTot.put("Current investment value", "Valore attuale investimento: " + totCurrentInvestmentValue_double_2_decimals);
         mapTot.put("Profit", "Guadagno: " + totProfit_double_2_decimals);
-        //E aggiungiamo anche questa alla lista
-        arrayList.add(mapTot);
+        //E aggiungiamola come primo elemento della lista
+        arrayList.add(0, mapTot);
 
         return arrayList;
     }

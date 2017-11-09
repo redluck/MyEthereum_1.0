@@ -32,7 +32,7 @@ import it.redluck.materialdesign.utilities.JSONParser;
 import static java.lang.Double.parseDouble;
 
 
-public class GetCoinbaseJSONTask2 extends AsyncTask<Void, Void, ArrayList<HashMap<String, String>>>{
+public class GetCoinbaseJSONTask extends AsyncTask<Void, Void, ArrayList<HashMap<String, String>>>{
 
 	//La progress dialog
 	private ProgressDialog progressDialog;
@@ -47,7 +47,7 @@ public class GetCoinbaseJSONTask2 extends AsyncTask<Void, Void, ArrayList<HashMa
 	/*----------------------------------------------------------------------------------------------------*
 	| Costruttore                                                                                         |
 	*----------------------------------------------------------------------------------------------------*/
-	public GetCoinbaseJSONTask2(Context context){
+	public GetCoinbaseJSONTask(Context context){
 		this.GetCoinbaseJSONTaskContext = context;
 	}
 
@@ -146,11 +146,21 @@ public class GetCoinbaseJSONTask2 extends AsyncTask<Void, Void, ArrayList<HashMa
             totCurrentInvestmentValue += currentInvestmentValue_double_2_decimals;
             totProfit += profit_double_2_decimals;
         }
-        //Formattiamo il campo totProfit con due decimali
+        //Formattiamo il campo totCostInEu con due decimali
         DecimalFormat df = new DecimalFormat("#.00");
         String totCostInEu_formatted_comma = df.format(totCostInEu);
         String totCostInEu_formatted_dot = totCostInEu_formatted_comma.replaceAll(",", ".");
         double totCostInEu_double_2_decimals = Double.parseDouble(totCostInEu_formatted_dot);
+
+        //Facciamo lo stesso con il campo totCurrentInvestmentValue
+        String totCurrentInvestmentValue_formatted_comma = df.format(totCurrentInvestmentValue);
+        String totCurrentInvestmentValue_formatted_dot = totCurrentInvestmentValue_formatted_comma.replaceAll(",", ".");
+        double totCurrentInvestmentValue_double_2_decimals = Double.parseDouble(totCurrentInvestmentValue_formatted_dot);
+
+        //E con il campo totProfit
+        String totProfit_formatted_comma = df.format(totProfit);
+        String totProfit_formatted_dot = totProfit_formatted_comma.replaceAll(",", ".");
+        double totProfit_double_2_decimals = Double.parseDouble(totProfit_formatted_dot);
 
         //Sysdate
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
@@ -162,8 +172,8 @@ public class GetCoinbaseJSONTask2 extends AsyncTask<Void, Void, ArrayList<HashMa
         mapTot.put("ETH value at date", "Valore ETH: " + ethCurrentValue);
         mapTot.put("Bought ETH", "ETH acquistato: " + totBoughtEth);
         mapTot.put("Cost in EU", "Spesa: " + totCostInEu_double_2_decimals);
-        mapTot.put("Current investment value", "Valore attuale investimento: " + totCurrentInvestmentValue);
-        mapTot.put("Profit", "Guadagno: " + totProfit);
+        mapTot.put("Current investment value", "Valore attuale investimento: " + totCurrentInvestmentValue_double_2_decimals);
+        mapTot.put("Profit", "Guadagno: " + totProfit_double_2_decimals);
         //E aggiungiamo anche questa alla lista
         arrayList.add(mapTot);
 

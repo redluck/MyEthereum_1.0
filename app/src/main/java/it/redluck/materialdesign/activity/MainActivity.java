@@ -1,7 +1,5 @@
 package it.redluck.materialdesign.activity;
 
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -76,11 +74,11 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         String title = getString(R.string.app_name);
         switch (position) {
             case 0:
-                fragment = new Fragment03();
+                fragment = new Fragment02();
                 tag = "frag01";
                 break;
             case 1:
-                fragment = new Fragment02();
+                fragment = new Fragment01();
                 tag = "frag02";
                 break;
             default:

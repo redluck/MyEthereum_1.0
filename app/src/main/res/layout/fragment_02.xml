@@ -1,68 +1,27 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    tools:context="it.redluck.materialdesign.activity.Fragment02">
 
-    <ScrollView
+    <ListView
+        android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+        android:layout_height="match_parent"
+        android:padding="5dp"
+        android:minHeight="100dp"
+        android:background="#FFFFFF"
+        android:divider="#FFFFFF"
+        android:dividerHeight="5dp"
+        android:cacheColorHint="@android:color/transparent" />
 
-            <TextView
-                android:id="@+id/label"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:textSize="17sp"
-                android:textColor="#000000" />
+</RelativeLayout>
 
-            <TextView
-                android:id="@+id/value01"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:textSize="17sp"
-                android:textColor="#000000" />
-
-            <TextView
-                android:id="@+id/value02"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:textSize="17sp"
-                android:textColor="#000000" />
-
-            <TextView
-                android:id="@+id/value03"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:textSize="17sp"
-                android:textColor="#000000" />
-
-            <TextView
-                android:id="@+id/total"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginBottom="5dp"
-                android:textSize="17sp"
-                android:textColor="#000000" />
-
-        </LinearLayout>
-    </ScrollView>
-
-</LinearLayout>
+<!--
+* divider & dividerHeight:
+sono usati per associare un colore e uno spessore alla linea di demarcazione tra un tag e il suo successivo.
+* cacheColorHint:
+rappresenta il colore che assume l'intera lista nel momento in cui viene scrollata;
+se impostato a transparent fa in modo che questa non cambi colore.
+ -->

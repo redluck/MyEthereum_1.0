@@ -5,9 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import it.redluck.materialdesign.R;
-import it.redluck.materialdesign.async_tasks.GetCoinmarketcapJSONTask;
+import it.redluck.materialdesign.async_tasks.GetCoinbaseJSONTask;
 
 public class Fragment02 extends Fragment {
 
@@ -15,7 +14,7 @@ public class Fragment02 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_02, container, false);
 
-        GetCoinmarketcapJSONTask task = new GetCoinmarketcapJSONTask(getActivity());
+        GetCoinbaseJSONTask task = new GetCoinbaseJSONTask(getActivity());
         task.execute();
 
         return rootView;

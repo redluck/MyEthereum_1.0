@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         fragmentDrawer.setFragmentDrawerListener(this);
 
         //Visualizziamo la prima voce del navigation drawer al lancio dell'applicazione
-        onDrawerItemSelected(0);
+        onDrawerItemSelected(2);
     }
 
     /*----------------------------------------------------------------------------------------------------*

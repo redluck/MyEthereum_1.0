@@ -1,9 +1,16 @@
 package it.redluck.materialdesign.async_tasks;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.helper.StaticLabelsFormatter;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.json.JSONObject;
 
@@ -13,9 +20,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
+import it.redluck.materialdesign.R;
 import it.redluck.materialdesign.model.Investment;
 import it.redluck.materialdesign.utilities.DateTools;
 import it.redluck.materialdesign.utilities.JSONParser;
@@ -24,12 +34,12 @@ import it.redluck.materialdesign.utilities.NewJSONParser;
 import static java.lang.Double.parseDouble;
 
 
-public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayList<HashMap<String, String>>>{
+public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayList<HashMap<String, Double>>>{
 
 	//La progress dialog
 	private ProgressDialog progressDialog;
 	//Il Context
-	private Context GetCoinbaseJSONTaskContext;
+	private Context context;
 
 	//Url del JSON escluso il timestamp
 	private static final String URL_JSON = "https://min-api.cryptocompare.com/data/pricehistorical?fsym=ETH&tsyms=EUR&e=Coinbase&ts=";
@@ -41,7 +51,7 @@ public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayLi
 	| Costruttore                                                                                         |
 	*----------------------------------------------------------------------------------------------------*/
 	public GetCoinbaseHistoricalJSONTask(Context context){
-		this.GetCoinbaseJSONTaskContext = context;
+		this.context = context;
 	}
 
 	/*----------------------------------------------------------------------------------------------------*
@@ -70,8 +80,10 @@ public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayLi
 	| doInBackground() - estraiamo i dati dalla url e carichiamoli in un ArrayList che verrà              |
 	|                    passato all'onPostExecute()                                                      |
 	*----------------------------------------------------------------------------------------------------*/
-    protected ArrayList<HashMap<String, String>> doInBackground(Void... args) {
+    protected ArrayList<HashMap<String, Double>> doInBackground(Void... args) {
 
+        //ArrayList da passare all'onPostExecute() contenente le coppie data/guadagno
+        ArrayList<HashMap<String, Double>> data = new ArrayList<>();
         //Generiamo le date da analizzare
         DateTools dt = new DateTools();
         LinkedHashMap<String, Long> dates = dt.generateCompareDates("08/08/2017 15:40", dt.getSysdate());
@@ -117,35 +129,78 @@ public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayLi
                 String profit_formatted_dot = profit_formatted_comma.replaceAll(",", ".");
                 double profit_double_2_decimals = Double.parseDouble(profit_formatted_dot);
 
-                Log.d("MyLog", "Data di controllo: " + controlDate + /*" / ETH acquistato: " + boughtEthAtDate + " / Spesa complessiva: " + costInEu + " / Valore investimento: " + currentInvestmentValue + */" / Guadagno: " + profit_double_2_decimals);
+                //Creiamo la coppia data/guadagno e aggiungiamola all'ArrayList da ritornare
+                HashMap dateProfit = new HashMap();
+                dateProfit.put(controlDate, profit_double_2_decimals);
+                data.add(dateProfit);
             }
             catch (Exception e) {
                 e.printStackTrace();
             }
 
         }
-        return null;
+        return data;
     }
 
 	/*----------------------------------------------------------------------------------------------------*
 	| onPostExecute() - al completamento del task in background rimuoviamo la ProgressDialog,             |
 	|                   creiamo il ListAdapter e associamolo alla ListView                                |
 	*----------------------------------------------------------------------------------------------------*/
-	protected void onPostExecute(ArrayList<HashMap<String, String>> result){
+	protected void onPostExecute(ArrayList<HashMap<String, Double>> result){
 
 		/*progressDialog.dismiss();
 
         MySimpleAdapter adapter = new MySimpleAdapter(GetCoinbaseJSONTaskContext, result, R.layout.list_item, new String[]{"Date", "ETH value at date", "Bought ETH", "Cost in EU", "Current investment value", "Profit"}, new int[]{R.id.date, R.id.eth_value_at_date, R.id.bought_eth, R.id.cost_in_eu, R.id.current_investment_value, R.id.profit});
         ListView lv = (ListView)((Activity) GetCoinbaseJSONTaskContext).findViewById(R.id.list);
         lv.setAdapter(adapter);*/
+
+        createGraph(result);
 	}
 
-    //Metodi del guadagno totale alla dataDiControllo
-    /*
-    - prendo tutte le date investimento minori di dataDiControllo
-      e ricavo la somma dell'eth fino a quel momento e la somma della spesa in €
-    - prendo il valore dell'eth alla dataDiControllo e calcolo il valore in €
-      della somma di eth
-    - sottraggo alla seconda somma quella della spesa in €
-     */
+    private void createGraph(ArrayList<HashMap<String, Double>> data) {
+
+        //Creazione del grafico
+        GraphView graph = (GraphView) ((Activity) context).findViewById(R.id.graph);
+
+        //Ricaviamo le label orizzontali
+        String[] dates = new String[data.size()];
+        DataPoint[] profits = new DataPoint[data.size()];
+        for(int i=0; i<data.size(); i++){
+            HashMap<String, Double> map = data.get(i);
+            for(String key : map.keySet()) {
+                dates[i] = key;
+                profits.(i+1, map.get(key));
+            }
+        }
+
+        //E quelle verticali
+        DataPoint[] dataPoint = new DataPoint[data.size()];
+        for(int i=0; i<data.size(); i++){
+            for(String key : map.keySet()) {
+                dates[i] = key;
+            }
+        }
+
+        StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
+        staticLabelsFormatter.setHorizontalLabels(dates);
+        graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
+        graph.getGridLabelRenderer().setHorizontalLabelsAngle(90);
+
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
+                new DataPoint(1, 1),
+                new DataPoint(2, 5),
+                new DataPoint(3, 3),
+                new DataPoint(4, 3),
+                new DataPoint(5, 7),
+                new DataPoint(6, 7),
+                new DataPoint(7, 7),
+        });
+        graph.addSeries(series);
+
+        //Rendiamo il grafico scrollabile e zoomabile
+        graph.getViewport().setScrollable(true);
+        graph.getViewport().setScrollableY(true);
+        //graph.getViewport().setScalable(true);
+        //graph.getViewport().setScalableY(true);
+    }
 }

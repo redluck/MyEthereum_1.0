@@ -25,8 +25,6 @@ public class Fragment03 extends Fragment {
         GetCoinbaseHistoricalJSONTask task = new GetCoinbaseHistoricalJSONTask(getActivity());
         task.execute();
 
-        createGraph(rootView);
-
         return rootView;
     }
 

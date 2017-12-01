@@ -6,11 +6,15 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.OnDataPointTapListener;
+import com.jjoe64.graphview.series.Series;
 
 import org.json.JSONObject;
 
@@ -148,59 +152,62 @@ public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayLi
 	*----------------------------------------------------------------------------------------------------*/
 	protected void onPostExecute(ArrayList<HashMap<String, Double>> result){
 
-		/*progressDialog.dismiss();
-
-        MySimpleAdapter adapter = new MySimpleAdapter(GetCoinbaseJSONTaskContext, result, R.layout.list_item, new String[]{"Date", "ETH value at date", "Bought ETH", "Cost in EU", "Current investment value", "Profit"}, new int[]{R.id.date, R.id.eth_value_at_date, R.id.bought_eth, R.id.cost_in_eu, R.id.current_investment_value, R.id.profit});
-        ListView lv = (ListView)((Activity) GetCoinbaseJSONTaskContext).findViewById(R.id.list);
-        lv.setAdapter(adapter);*/
+		//progressDialog.dismiss();
 
         createGraph(result);
 	}
 
+    /*----------------------------------------------------------------------------------------------------*
+	| createGraph() - http://www.android-graphview.org                                                    |
+	*----------------------------------------------------------------------------------------------------*/
     private void createGraph(ArrayList<HashMap<String, Double>> data) {
 
-        //Creazione del grafico
+        //Creiamo il grafico
         GraphView graph = (GraphView) ((Activity) context).findViewById(R.id.graph);
+        //Distanza grafico/etichette dal bordo della pagina
+        graph.getGridLabelRenderer().setPadding(25);
 
-        //Ricaviamo le label orizzontali
+        //Ricaviamo i valori di ogni coppia x/y
         String[] dates = new String[data.size()];
         DataPoint[] profits = new DataPoint[data.size()];
         for(int i=0; i<data.size(); i++){
             HashMap<String, Double> map = data.get(i);
             for(String key : map.keySet()) {
                 dates[i] = key;
-                profits.(i+1, map.get(key));
+                profits[i] = new DataPoint(i+1, map.get(key));
             }
         }
 
-        //E quelle verticali
-        DataPoint[] dataPoint = new DataPoint[data.size()];
-        for(int i=0; i<data.size(); i++){
-            for(String key : map.keySet()) {
-                dates[i] = key;
-            }
-        }
-
+        //Impostiamo le label x
         StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
         staticLabelsFormatter.setHorizontalLabels(dates);
         graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
+        //Posizioniamo le label x in verticale
         graph.getGridLabelRenderer().setHorizontalLabelsAngle(90);
+        //Evitiamo che le label x, messe in verticale, si sovrappongano al grafico
+        graph.getGridLabelRenderer().setLabelHorizontalHeight(400);
+        //Visualizziamo solo 4 label x nella schermata
+        graph.getGridLabelRenderer().setNumHorizontalLabels(4);
 
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
-                new DataPoint(1, 1),
-                new DataPoint(2, 5),
-                new DataPoint(3, 3),
-                new DataPoint(4, 3),
-                new DataPoint(5, 7),
-                new DataPoint(6, 7),
-                new DataPoint(7, 7),
-        });
+        //Aggiungiamo i valori di ogni coppia x/y al grafico
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(profits);
         graph.addSeries(series);
 
-        //Rendiamo il grafico scrollabile e zoomabile
+        //Visualizziamo un punto cliccabile sul grafico per ogni coppia x/y
+        series.setDrawDataPoints(true);
+        series.setOnDataPointTapListener(new OnDataPointTapListener() {
+            @Override
+            public void onTap(Series series, DataPointInterface dataPoint) {
+                Toast.makeText(context, "€ " + dataPoint.getY(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //La schermata deve contenere solo 4 valori x per volta
+        graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setMaxX(4);
+
+        //Rendiamo il grafico scrollabile in orizzontale e partiamo dalla fine
         graph.getViewport().setScrollable(true);
-        graph.getViewport().setScrollableY(true);
-        //graph.getViewport().setScalable(true);
-        //graph.getViewport().setScalableY(true);
+        graph.getViewport().scrollToEnd();
     }
 }

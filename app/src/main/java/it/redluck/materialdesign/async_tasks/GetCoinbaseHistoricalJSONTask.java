@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.DataPointInterface;
@@ -22,6 +23,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,8 +39,7 @@ import it.redluck.materialdesign.utilities.NewJSONParser;
 
 import static java.lang.Double.parseDouble;
 
-
-public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayList<HashMap<String, Double>>>{
+public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayList<HashMap<Date, Double>>>{
 
 	//La progress dialog
 	private ProgressDialog progressDialog;
@@ -84,10 +85,10 @@ public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayLi
 	| doInBackground() - estraiamo i dati dalla url e carichiamoli in un ArrayList che verrà              |
 	|                    passato all'onPostExecute()                                                      |
 	*----------------------------------------------------------------------------------------------------*/
-    protected ArrayList<HashMap<String, Double>> doInBackground(Void... args) {
+    protected ArrayList<HashMap<Date, Double>> doInBackground(Void... args) {
 
         //ArrayList da passare all'onPostExecute() contenente le coppie data/guadagno
-        ArrayList<HashMap<String, Double>> data = new ArrayList<>();
+        ArrayList<HashMap<Date, Double>> data = new ArrayList<>();
         //Generiamo le date da analizzare
         DateTools dt = new DateTools();
         LinkedHashMap<String, Long> dates = dt.generateCompareDates("08/08/2017 15:40", dt.getSysdate());
@@ -133,9 +134,12 @@ public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayLi
                 String profit_formatted_dot = profit_formatted_comma.replaceAll(",", ".");
                 double profit_double_2_decimals = Double.parseDouble(profit_formatted_dot);
 
+                //Riconvertiamo la data di controllo da stringa a data
+                DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                Date date = format.parse(controlDate);
                 //Creiamo la coppia data/guadagno e aggiungiamola all'ArrayList da ritornare
                 HashMap dateProfit = new HashMap();
-                dateProfit.put(controlDate, profit_double_2_decimals);
+                dateProfit.put(date, profit_double_2_decimals);
                 data.add(dateProfit);
             }
             catch (Exception e) {
@@ -150,11 +154,16 @@ public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayLi
 	| onPostExecute() - al completamento del task in background rimuoviamo la ProgressDialog,             |
 	|                   creiamo il ListAdapter e associamolo alla ListView                                |
 	*----------------------------------------------------------------------------------------------------*/
-	protected void onPostExecute(ArrayList<HashMap<String, Double>> result){
+	@Override
+    protected void onPostExecute(ArrayList<HashMap<Date, Double>> result){
 
 		//progressDialog.dismiss();
 
-        createGraph(result);
+        //createGraph2();
+
+        //Log.d("MyLog", result.toString());
+        //GraphView graph = (GraphView) ((Activity) context).findViewById(R.id.graph);
+        //createGraph2(graph);
 	}
 
     /*----------------------------------------------------------------------------------------------------*
@@ -187,7 +196,7 @@ public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayLi
         //Evitiamo che le label x, messe in verticale, si sovrappongano al grafico
         graph.getGridLabelRenderer().setLabelHorizontalHeight(400);
         //Visualizziamo solo 4 label x nella schermata
-        graph.getGridLabelRenderer().setNumHorizontalLabels(4);
+        //graph.getGridLabelRenderer().setNumHorizontalLabels(4);
 
         //Aggiungiamo i valori di ogni coppia x/y al grafico
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>(profits);
@@ -209,5 +218,46 @@ public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayLi
         //Rendiamo il grafico scrollabile in orizzontale e partiamo dalla fine
         graph.getViewport().setScrollable(true);
         graph.getViewport().scrollToEnd();
+    }
+
+    private void createGraph2() {
+
+        //Creiamo il grafico
+        GraphView graph = (GraphView) ((Activity) context).findViewById(R.id.graph);
+        //Distanza grafico/etichette dal bordo della pagina
+        graph.getGridLabelRenderer().setPadding(25);
+
+        // generate Dates
+        Calendar calendar = Calendar.getInstance();
+        Date d1 = calendar.getTime();
+        calendar.add(Calendar.DATE, 1);
+        Date d2 = calendar.getTime();
+        calendar.add(Calendar.DATE, 1);
+        Date d3 = calendar.getTime();
+        Log.d("MyLog", d1.toString());
+
+
+        // you can directly pass Date objects to DataPoint-Constructor
+        // this will convert the Date to double via Date#getTime()
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
+                new DataPoint(d1, 1),
+                new DataPoint(d2, 5),
+                new DataPoint(d3, 3)
+        });
+
+        graph.addSeries(series);
+
+        // set date label formatter
+        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(context));
+        graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
+
+        // set manual x bounds to have nice steps
+        graph.getViewport().setMinX(d1.getTime());
+        graph.getViewport().setMaxX(d3.getTime());
+        graph.getViewport().setXAxisBoundsManual(true);
+
+        // as we use dates as labels, the human rounding to nice readable numbers
+        // is not necessary
+        graph.getGridLabelRenderer().setHumanRounding(false);
     }
 }

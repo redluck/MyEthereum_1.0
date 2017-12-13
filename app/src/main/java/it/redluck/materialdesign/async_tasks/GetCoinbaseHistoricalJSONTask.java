@@ -156,45 +156,35 @@ public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayLi
 	*----------------------------------------------------------------------------------------------------*/
 	@Override
     protected void onPostExecute(ArrayList<HashMap<Date, Double>> result){
-
 		//progressDialog.dismiss();
 
-        //createGraph2();
-
-        //Log.d("MyLog", result.toString());
-        //GraphView graph = (GraphView) ((Activity) context).findViewById(R.id.graph);
-        //createGraph2(graph);
+        createGraph(result);
 	}
 
     /*----------------------------------------------------------------------------------------------------*
 	| createGraph() - http://www.android-graphview.org                                                    |
 	*----------------------------------------------------------------------------------------------------*/
-    private void createGraph(ArrayList<HashMap<String, Double>> data) {
+    private void createGraph(ArrayList<HashMap<Date, Double>> data) {
 
         //Creiamo il grafico
         GraphView graph = (GraphView) ((Activity) context).findViewById(R.id.graph);
         //Distanza grafico/etichette dal bordo della pagina
         graph.getGridLabelRenderer().setPadding(25);
 
+        Log.d("MyLog", data.toString());
         //Ricaviamo i valori di ogni coppia x/y
-        String[] dates = new String[data.size()];
         DataPoint[] profits = new DataPoint[data.size()];
         for(int i=0; i<data.size(); i++){
-            HashMap<String, Double> map = data.get(i);
-            for(String key : map.keySet()) {
-                dates[i] = key;
-                profits[i] = new DataPoint(i+1, map.get(key));
+            HashMap<Date, Double> map = data.get(i);
+            for(Date key : map.keySet()) {
+                profits[i] = new DataPoint(key, map.get(key));
             }
         }
 
-        //Impostiamo le label x
-        StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
-        staticLabelsFormatter.setHorizontalLabels(dates);
-        graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
         //Posizioniamo le label x in verticale
         graph.getGridLabelRenderer().setHorizontalLabelsAngle(90);
         //Evitiamo che le label x, messe in verticale, si sovrappongano al grafico
-        graph.getGridLabelRenderer().setLabelHorizontalHeight(400);
+        graph.getGridLabelRenderer().setLabelHorizontalHeight(225);
         //Visualizziamo solo 4 label x nella schermata
         //graph.getGridLabelRenderer().setNumHorizontalLabels(4);
 
@@ -207,20 +197,24 @@ public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayLi
         series.setOnDataPointTapListener(new OnDataPointTapListener() {
             @Override
             public void onTap(Series series, DataPointInterface dataPoint) {
-                Toast.makeText(context, "€ " + dataPoint.getY(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, dataPoint.getX() + ": € " + dataPoint.getY(), Toast.LENGTH_SHORT).show();
             }
         });
 
         //La schermata deve contenere solo 4 valori x per volta
-        graph.getViewport().setXAxisBoundsManual(true);
-        graph.getViewport().setMaxX(4);
+        /*graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setMaxX(4);*/
 
         //Rendiamo il grafico scrollabile in orizzontale e partiamo dalla fine
         graph.getViewport().setScrollable(true);
         graph.getViewport().scrollToEnd();
+
+        // set date label formatter
+        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(context));
+        //graph.getGridLabelRenderer().setNumHorizontalLabels(3);
     }
 
-    private void createGraph2() {
+    /*private void createGraph2() {
 
         //Creiamo il grafico
         GraphView graph = (GraphView) ((Activity) context).findViewById(R.id.graph);
@@ -247,6 +241,10 @@ public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayLi
 
         graph.addSeries(series);
 
+
+
+
+
         // set date label formatter
         graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(context));
         graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
@@ -259,5 +257,5 @@ public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayLi
         // as we use dates as labels, the human rounding to nice readable numbers
         // is not necessary
         graph.getGridLabelRenderer().setHumanRounding(false);
-    }
+    }*/
 }

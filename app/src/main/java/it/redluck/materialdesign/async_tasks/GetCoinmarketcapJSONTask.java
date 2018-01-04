@@ -24,7 +24,7 @@ public class GetCoinmarketcapJSONTask extends AsyncTask<Void, Void, JSONObject>{
 	private Context getJsonTaskContext;
 
 	//Url del JSON
-	private static final String URL_JSON = "https://api.coinmarketcap.com/v1/ticker/?convert=EUR&limit=2";
+	private static final String URL_JSON = "https://api.coinmarketcap.com/v1/ticker/?convert=EUR&limit=3";
 	//Nomi dei nodi del JSON
 	private static final String TAG_ID = "id";
 	private static final String TAG_PRICE = "price_eur";

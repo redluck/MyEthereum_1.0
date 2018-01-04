@@ -3,41 +3,31 @@ package it.redluck.materialdesign.async_tasks;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
-
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
-import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.OnDataPointTapListener;
 import com.jjoe64.graphview.series.Series;
-
 import org.json.JSONObject;
-
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
-
 import it.redluck.materialdesign.R;
 import it.redluck.materialdesign.model.Investment;
 import it.redluck.materialdesign.utilities.DateTools;
-import it.redluck.materialdesign.utilities.JSONParser;
 import it.redluck.materialdesign.utilities.NewJSONParser;
-
-import static java.lang.Double.parseDouble;
 
 public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayList<HashMap<Date, Double>>>{
 
@@ -64,9 +54,9 @@ public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayLi
 	*----------------------------------------------------------------------------------------------------*/
 	@Override
 	protected void onPreExecute(){
-		/*super.onPreExecute();
+		super.onPreExecute();
         //Creiamo una Progress Dialog associandogli uno stile personalizzato
-		progressDialog = new ProgressDialog(GetCoinbaseJSONTaskContext, R.style.MyProgressDialogTheme);
+		progressDialog = new ProgressDialog(context, R.style.MyProgressDialogTheme);
 		//Rendiamo la ProgressDialog cancellabile
 		progressDialog.setCancelable(true);
 		//Ma non al semplice tocco di una parte qualsiasi del display
@@ -74,11 +64,11 @@ public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayLi
 		//Solo al tocco del tasto indietro
 		progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener(){
 			public void onCancel(DialogInterface dialog){
-				((Activity) GetCoinbaseJSONTaskContext).finish();
+				((Activity) context).finish();
 			}
 		});
 		//Visualizziamo la Progress Dialog
-		progressDialog.show();*/
+		progressDialog.show();
 	}
 
 	/*----------------------------------------------------------------------------------------------------*
@@ -156,7 +146,7 @@ public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayLi
 	*----------------------------------------------------------------------------------------------------*/
 	@Override
     protected void onPostExecute(ArrayList<HashMap<Date, Double>> result){
-		//progressDialog.dismiss();
+		progressDialog.dismiss();
 
         createGraph(result);
 	}
@@ -168,10 +158,7 @@ public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayLi
 
         //Creiamo il grafico
         GraphView graph = (GraphView) ((Activity) context).findViewById(R.id.graph);
-        //Distanza grafico/etichette dal bordo della pagina
-        graph.getGridLabelRenderer().setPadding(25);
 
-        Log.d("MyLog", data.toString());
         //Ricaviamo i valori di ogni coppia x/y
         DataPoint[] profits = new DataPoint[data.size()];
         for(int i=0; i<data.size(); i++){
@@ -180,13 +167,7 @@ public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayLi
                 profits[i] = new DataPoint(key, map.get(key));
             }
         }
-
-        //Posizioniamo le label x in verticale
-        graph.getGridLabelRenderer().setHorizontalLabelsAngle(90);
-        //Evitiamo che le label x, messe in verticale, si sovrappongano al grafico
-        graph.getGridLabelRenderer().setLabelHorizontalHeight(225);
-        //Visualizziamo solo 4 label x nella schermata
-        //graph.getGridLabelRenderer().setNumHorizontalLabels(4);
+        //Log.d("MyLog", data.toString());
 
         //Aggiungiamo i valori di ogni coppia x/y al grafico
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>(profits);
@@ -197,65 +178,38 @@ public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayLi
         series.setOnDataPointTapListener(new OnDataPointTapListener() {
             @Override
             public void onTap(Series series, DataPointInterface dataPoint) {
-                Toast.makeText(context, dataPoint.getX() + ": € " + dataPoint.getY(), Toast.LENGTH_SHORT).show();
+                //Convertiamo il double fornitoci in data
+                Date myDate = new Date((long) dataPoint.getX());
+                //Quindi formattiamo la data
+                DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                String date = format.format(myDate);
+
+                Toast.makeText(context, date + ": € " + dataPoint.getY(), Toast.LENGTH_SHORT).show();
             }
         });
 
-        //La schermata deve contenere solo 4 valori x per volta
-        /*graph.getViewport().setXAxisBoundsManual(true);
-        graph.getViewport().setMaxX(4);*/
+        //Posizioniamo le label x in verticale
+        graph.getGridLabelRenderer().setHorizontalLabelsAngle(90);
+        //Evitiamo che le label x, messe in verticale, si sovrappongano al grafico
+        graph.getGridLabelRenderer().setLabelHorizontalHeight(225);
+        //Formattiamo le label x delle date
+        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(context));
+        //Visualizziamo un numero di label x
+        //graph.getGridLabelRenderer().setNumHorizontalLabels(5);
 
-        //Rendiamo il grafico scrollabile in orizzontale e partiamo dalla fine
+        //La schermata deve contenere solo un tot valori x per volta
+        graph.getViewport().setMinX(profits[0].getX());
+        graph.getViewport().setMaxX(profits[4].getX());
+        graph.getViewport().setXAxisBoundsManual(true);
+
+        //Rendiamo il grafico scrollabile e scalabile in orizzontale e partiamo dalla fine
+        graph.getViewport().setScalable(true);
         graph.getViewport().setScrollable(true);
         graph.getViewport().scrollToEnd();
 
-        // set date label formatter
-        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(context));
-        //graph.getGridLabelRenderer().setNumHorizontalLabels(3);
+        //Impostiamo un colore di sfondo per la linea del grafico
+        series.setDrawBackground(true);
+        //I primi due numeri del colore indicano l'opacità
+        series.setBackgroundColor(Color.parseColor("#55C1FFD5"));
     }
-
-    /*private void createGraph2() {
-
-        //Creiamo il grafico
-        GraphView graph = (GraphView) ((Activity) context).findViewById(R.id.graph);
-        //Distanza grafico/etichette dal bordo della pagina
-        graph.getGridLabelRenderer().setPadding(25);
-
-        // generate Dates
-        Calendar calendar = Calendar.getInstance();
-        Date d1 = calendar.getTime();
-        calendar.add(Calendar.DATE, 1);
-        Date d2 = calendar.getTime();
-        calendar.add(Calendar.DATE, 1);
-        Date d3 = calendar.getTime();
-        Log.d("MyLog", d1.toString());
-
-
-        // you can directly pass Date objects to DataPoint-Constructor
-        // this will convert the Date to double via Date#getTime()
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
-                new DataPoint(d1, 1),
-                new DataPoint(d2, 5),
-                new DataPoint(d3, 3)
-        });
-
-        graph.addSeries(series);
-
-
-
-
-
-        // set date label formatter
-        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(context));
-        graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
-
-        // set manual x bounds to have nice steps
-        graph.getViewport().setMinX(d1.getTime());
-        graph.getViewport().setMaxX(d3.getTime());
-        graph.getViewport().setXAxisBoundsManual(true);
-
-        // as we use dates as labels, the human rounding to nice readable numbers
-        // is not necessary
-        graph.getGridLabelRenderer().setHumanRounding(false);
-    }*/
 }

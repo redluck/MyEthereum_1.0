@@ -142,7 +142,7 @@ public class GetCoinbaseHistoricalJSONTask extends AsyncTask<Void, Void, ArrayLi
 
 	/*----------------------------------------------------------------------------------------------------*
 	| onPostExecute() - al completamento del task in background rimuoviamo la ProgressDialog,             |
-	|                   creiamo il ListAdapter e associamolo alla ListView                                |
+	|                   e creiamo il grafico                                                              |
 	*----------------------------------------------------------------------------------------------------*/
 	@Override
     protected void onPostExecute(ArrayList<HashMap<Date, Double>> result){

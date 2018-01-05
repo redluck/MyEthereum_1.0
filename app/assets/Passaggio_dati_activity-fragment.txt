@@ -1,0 +1,3 @@
+Per passare dei dati da un'activity ad un fragment si agisce come mostrato di seguito
+(nello specifico passeremo un ArrayList<HashMap<Date, Double>>):
+

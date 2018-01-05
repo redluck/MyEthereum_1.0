@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         fragmentDrawer.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
         fragmentDrawer.setFragmentDrawerListener(this);
 
-        //Avviamo il task asincrono per caricare i dati del grafico (da usare poi nel fragment )
+        //Avviamo il task asincrono per caricare i dati del grafico (da usare poi nel fragment)
         GetCoinbaseHistoricalJSONTask2 task = new GetCoinbaseHistoricalJSONTask2(this, this);
         task.execute();
 
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 break;
             case 2:
                 fragment = new Fragment03();
-                //Passiamo al fragment i dati per creare il grafico
+                //Passiamo al fragment i dati necessari a creare il grafico
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("data_for_graph", dataForGraph);
                 fragment.setArguments(bundle);

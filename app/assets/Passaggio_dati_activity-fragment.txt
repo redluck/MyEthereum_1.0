@@ -1,3 +1,20 @@
+In questa applicazione vedremo in primo luogo come sia possibile passare dati da un task asincrono
+ad una activity (tramite l'utilizzo di un listener) e in secondo luogo come passare dati (nella
+fattispecie gli stessi) dall'activity ad un fragment.
+Per approfondimenti sul primo tema vedere l'applicazione ConnectToMySQL.
+
 Per passare dei dati da un'activity ad un fragment si agisce come mostrato di seguito
 (nello specifico passeremo un ArrayList<HashMap<Date, Double>>):
 
+ALL'INTERNO DELLA NOSTRA ACTIVITY
+Bundle bundle = new Bundle();
+bundle.putSerializable("data_for_graph", dataForGraph);
+fragment.setArguments(bundle);
+//poi avviamo il fragment
+
+ALL'INTERNO DEL FRAGMENT, NELL'ONCREATEVIEW
+Bundle bundle = this.getArguments();
+if(bundle.getSerializable("data_for_graph") != null) {
+    ArrayList<HashMap<Date, Double>> list = (ArrayList<HashMap<Date, Double>>) bundle.getSerializable("data_for_graph");
+    //poi usiamo list come ci serve
+}

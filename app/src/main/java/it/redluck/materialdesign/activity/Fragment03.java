@@ -86,19 +86,19 @@ public class Fragment03 extends Fragment {
         //Posizioniamo le label x in verticale
         graph.getGridLabelRenderer().setHorizontalLabelsAngle(90);
         //Evitiamo che le label x, messe in verticale, si sovrappongano al grafico
-        graph.getGridLabelRenderer().setLabelHorizontalHeight(225);
+        //graph.getGridLabelRenderer().setLabelHorizontalHeight(225);
         //Formattiamo le label x delle date
         graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getActivity()));
-        //Visualizziamo un numero di label x
-        //graph.getGridLabelRenderer().setNumHorizontalLabels(5);
+        //Visualizziamo un numero di label x predefinito
+        //graph.getGridLabelRenderer().setNumHorizontalLabels(4);
 
         //La schermata deve contenere solo un tot valori x per volta
         graph.getViewport().setMinX(profits[0].getX());
-        graph.getViewport().setMaxX(profits[4].getX());
+        graph.getViewport().setMaxX(profits[6].getX());
         graph.getViewport().setXAxisBoundsManual(true);
 
         //Rendiamo il grafico scrollabile e scalabile in orizzontale e partiamo dalla fine
-        graph.getViewport().setScalable(true);
+        //graph.getViewport().setScalable(true);
         graph.getViewport().setScrollable(true);
         graph.getViewport().scrollToEnd();
 

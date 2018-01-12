@@ -76,7 +76,7 @@ public class GetCoinmarketcapJSONTask extends AsyncTask<Void, Void, JSONObject>{
             for (int i = 0; i < json.length(); i++) {
                 JSONObject jsonObject = json.getJSONObject(i);
 				//Quindi prendiamo in considerazione solo il JSONObject che ci interessa
-				if(jsonObject.getString(TAG_ID).equals("ethereum")) {
+				if(jsonObject.getString(TAG_ID).equals("ripple")) {
                     returnJsonObject = jsonObject;
                 }
             }
@@ -102,7 +102,7 @@ public class GetCoinmarketcapJSONTask extends AsyncTask<Void, Void, JSONObject>{
             DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             Date date = new Date(Long.parseLong(result.getString(TAG_UPDATED_AT)) * 1000);
             String dateString = df.format(date);
-            tv.setText("Quotazione Ethereum su CoinMarketCap\n" + dateString + "\n€ " + result.getString(TAG_PRICE).substring(0, 6));
+            tv.setText("Quotazione Ripple su CoinMarketCap\n" + dateString + "\n€ " + result.getString(TAG_PRICE).substring(0, 6));
         }
         catch (JSONException e) {
             e.printStackTrace();

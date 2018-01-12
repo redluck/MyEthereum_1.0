@@ -36,9 +36,6 @@ public class Fragment03 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         fragment3 = inflater.inflate(R.layout.fragment_03, container, false);
 
-        //GetCoinbaseHistoricalJSONTask task = new GetCoinbaseHistoricalJSONTask(getActivity());
-        //task.execute();
-
         //Ricaviamo i dati inviati al fragment corrente dalla MainActivity
         Bundle bundle = this.getArguments();
         if(bundle.getSerializable("data_for_graph") != null) {
@@ -66,7 +63,6 @@ public class Fragment03 extends Fragment {
                 profits[i] = new DataPoint(key, map.get(key));
             }
         }
-        //Log.d("MyLog", data.toString());
 
         //Aggiungiamo i valori di ogni coppia x/y al grafico
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>(profits);
